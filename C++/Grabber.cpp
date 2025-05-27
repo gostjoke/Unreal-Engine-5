@@ -82,6 +82,7 @@ void UGrabber::Grab() // ctril + shift + B + CrytalRaiderEdiot win64 Develpment 
 	{
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 		HitComponent -> WakeAllRigidBodies(); // Wake up the rigid body if it is asleep
+		HitResult.GetActor()->Tags.Add("Grabbed"); // Add a tag to the actor for identification
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			HitResult.GetComponent(), // The component that was hit
 			NAME_None, // No specific bone name
@@ -95,7 +96,6 @@ void UGrabber::Grab() // ctril + shift + B + CrytalRaiderEdiot win64 Develpment 
 
 void UGrabber::Release() // ctril + shift + B + CrytalRaiderEdiot win64 Develpment Build
 {
-	UE_LOG(LogTemp, Warning, TEXT("Release Grab"));
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (PhysicsHandle == nullptr)
 	{
@@ -105,12 +105,12 @@ void UGrabber::Release() // ctril + shift + B + CrytalRaiderEdiot win64 Develpme
 
 	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 	{
+		AActor* GrabbedActor = PhysicsHandle->GetGrabbedComponent()->GetOwner();;
+		GrabbedActor->Tags.Remove("Grabbed");
 		PhysicsHandle->ReleaseComponent(); // Release the grabbed component
+
+		 // Remove the tag from the actor
 		UE_LOG(LogTemp, Warning, TEXT("Released Grab"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No component to release"));
 	}
 
 }	
