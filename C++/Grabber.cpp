@@ -29,13 +29,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (PhysicsHandle == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Physics Handle found"));
-		return;
-	}
+	// if (PhysicsHandle == nullptr)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("No Physics Handle found"));
+	// 	return;
+	// }
 
-	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+	if (PhysicsHandle && PhysicsHandle->GetGrabbedComponent() != nullptr) // Prevent the PhysicsHandle is nullptr
 	{
 		// If we are holding something, update its position
 		FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance; // Adjust the hold distance as needed
@@ -81,8 +81,11 @@ void UGrabber::Grab() // ctril + shift + B + CrytalRaiderEdiot win64 Develpment 
 	if (HasHit)
 	{
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+		HitComponent -> SetSimulatePhysics(true); // Enable physics simulation on the hit component
 		HitComponent -> WakeAllRigidBodies(); // Wake up the rigid body if it is asleep
-		HitResult.GetActor()->Tags.Add("Grabbed"); // Add a tag to the actor for identification
+		AActor* HitActor = HitResult.GetActor();
+		HitActor->Tags.Add("Grabbed"); // Add a tag to the actor for identification
+		HitActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); // Detach the actor from its parent if it has one
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			HitResult.GetComponent(), // The component that was hit
 			NAME_None, // No specific bone name
@@ -97,13 +100,13 @@ void UGrabber::Grab() // ctril + shift + B + CrytalRaiderEdiot win64 Develpment 
 void UGrabber::Release() // ctril + shift + B + CrytalRaiderEdiot win64 Develpment Build
 {
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (PhysicsHandle == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Physics Handle found"));
-		return;
-	}
+	// if (PhysicsHandle == nullptr)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("No Physics Handle found"));
+	// 	return;
+	// }
 
-	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+	if (PhysicsHandle && PhysicsHandle->GetGrabbedComponent() != nullptr)
 	{
 		AActor* GrabbedActor = PhysicsHandle->GetGrabbedComponent()->GetOwner();;
 		GrabbedActor->Tags.Remove("Grabbed");

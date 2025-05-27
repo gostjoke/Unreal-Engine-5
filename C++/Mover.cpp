@@ -30,25 +30,18 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	// AActor* Owner = GetOwner();
-	
-	// FString Name = (*Owner).GetActorNameOrLabel();
-	// FString Name = Owner->GetActorNameOrLabel();
-	// FString Loc = Owner->GetActorLocation().ToString();
-
-	// UE_LOG(LogTemp, Display, TEXT("My Name: %s"), *Name);
-	// UE_LOG(LogTemp, Display, TEXT("My Loc: %s"), *Loc);
-	// UE_LOG(LogTemp, Warning, TEXT("Mover is Ticking!"));
-	// UE_LOG(LogTemp, Display, TEXT("Owner Address: %u"), Owner);
+	FVector TargetLocation = OriginalLocation;
 	if (ShouldMove)
 	{
+		TargetLocation = OriginalLocation + MoveOffset;
+	}
 	FVector CurrentLocation = GetOwner()->GetActorLocation();
-	FVector TargetLocation = OriginalLocation + MoveOffset;
-	float Speed = FVector::Distance(CurrentLocation, TargetLocation) / MoveTime;
+	// float Speed = FVector::Distance(CurrentLocation, TargetLocation) / MoveTime;
+	float Speed = MoveOffset.Length() / MoveTime;
 
 	FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
 	GetOwner()->SetActorLocation(NewLocation);
-	}
+
 }	
 
 void UMover::SetShouldMove(bool NewShouldMove)

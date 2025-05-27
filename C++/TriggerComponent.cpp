@@ -56,7 +56,7 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 	for (AActor* Actor : Actors)
 	{
 		// FString ActorName = Actor->GetActorNameOrLabel();
-		if (Actor -> ActorHasTag(AcceptableActorTag)) // *** need to add tag to Wall
+		if (Actor -> ActorHasTag(AcceptableActorTag) && !Actor -> ActorHasTag("Grabbed")) // *** need to add tag to Wall
 		{
 			return Actor;
 		};
