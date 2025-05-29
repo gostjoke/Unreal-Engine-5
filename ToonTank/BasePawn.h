@@ -22,14 +22,14 @@ public:
 	// UPROPERTY(EditAnywhere)
 	// int32 EditAnywhereInt = 22;
 
-	UPROPERTY(VisibleInstanceOnly)
-	int32 VisibleInstanceOnlyInt = 11;
+	// UPROPERTY(VisibleInstanceOnly)
+	// int32 VisibleInstanceOnlyInt = 11;
 
-	UPROPERTY(VisibleDefaultsOnly)
-	int32 VisibleDefaultsOnlyInt = 5;
+	// UPROPERTY(VisibleDefaultsOnly)
+	// int32 VisibleDefaultsOnlyInt = 5;
 
-	UPROPERTY(EditAnywhere)
-	float Speed = 400.f;
+	// UPROPERTY(EditAnywhere)
+	// float Speed = 400.f;
 
 protected:
 	// Called when the game starts or when spawned

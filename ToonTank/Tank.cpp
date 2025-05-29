@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ATank::ATank()
@@ -25,12 +26,26 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
     UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent called!"));
     // Bind movement input
     PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ATank::Move);
+    PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ATank::Turn);
 }
 
 void ATank::Move(float Value)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Move called with Value: %f"), Value);
+    // UE_LOG(LogTemp, Warning, TEXT("Move called with Value: %f"), Value);
     FVector DeltaLocation = FVector::ZeroVector; // [0, 0, 0]
-    DeltaLocation.X = Value ; //
-    AddActorLocalOffset(DeltaLocation); // true means sweep, it will check for collisions
+
+    // X = Value * DeltaTime * Speed;
+    DeltaLocation.X = Value * Speed * UGameplayStatics::GetWorldDeltaSeconds(this); //
+
+    AddActorLocalOffset(DeltaLocation, true); // true means sweep, it will check for collisions
+}
+
+void ATank::Turn(float Value)
+{
+    FRotator DeltaRotation = FRotator::ZeroRotator; // [0, 0, 0]
+    // Yaw = Value * DeltaTime * TurnRate;
+    DeltaRotation.Yaw = Value * TurnRate * UGameplayStatics::GetWorldDeltaSeconds(this); // 0.0166667f;
+    // add to actor
+    AddActorLocalRotation(DeltaRotation, true); // true means sweep, it will check for collisions
+    
 }
