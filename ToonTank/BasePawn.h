@@ -30,11 +30,10 @@ public:
 
 	// UPROPERTY(EditAnywhere)
 	// float Speed = 400.f;
-
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
+	void RotateTurret(FVector LookAtTarget);
+	void Fire();
 
 private:
 	// add capsule component for collision
@@ -52,9 +51,5 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"),  category = "Super Duper Varaibles")
 	int32 EditAnywhereInt = 22;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

@@ -3,7 +3,8 @@
 
 #include "BasePawn.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 // Sets default values
 ABasePawn::ABasePawn()
 {
@@ -23,22 +24,33 @@ ABasePawn::ABasePawn()
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
 }
 
-// Called when the game starts or when spawned
-void ABasePawn::BeginPlay()
+void ABasePawn::RotateTurret(FVector LookAtTarget)
 {
-	Super::BeginPlay();
-	
+	FVector ToTarget = LookAtTarget - TurretMesh->GetComponentLocation();
+	FRotator LookAtRotation = FRotator(0.f, ToTarget.Rotation().Yaw, 0.f); // Normalize the rotation to avoid any issues with large angles
+	// UGameplayStatics::GetWorldDeltaSeconds(this) almost equal GetWorld()->GetDeltaSeconds()
+	TurretMesh->SetWorldRotation(
+		FMath::RInterpTo(TurretMesh->GetComponentRotation(), 
+		LookAtRotation, 
+		UGameplayStatics::GetWorldDeltaSeconds(this), 
+		5.f));
 }
 
-// Called every frame
-void ABasePawn::Tick(float DeltaTime)
+void ABasePawn::Fire()
 {
-	Super::Tick(DeltaTime);
+	// Implement firing logic here
+	// For example, spawn a projectile at the ProjectileSpawnPoint location
+	UE_LOG(LogTemp, Warning, TEXT("Fire function called!"));
 
-	// Example of moving the actor by a fixed amount every frame
-	// FVector DeltaLocation(0.f);
-	// DeltaLocation.X = 2.f;
-	
-	// AddActorLocalOffset(DeltaLocation);
+	FVector ProjectileSpawnPointLocation = ProjectileSpawnPoint->GetComponentLocation();
+	DrawDebugSphere(
+		GetWorld(),
+		ProjectileSpawnPointLocation, // Offset the sphere a bit above the tank
+		25.f, // Radius of the sphere
+		12, // Segments
+		FColor::Red,
+		false,
+		3.f
+	);
+
 }
-
