@@ -14,14 +14,29 @@ class TOONTANKS_API AProjectile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AProjectile();
+	
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Combit")
 	class UStaticMeshComponent* ProjectileMesh; // Mesh component for the projectile
 
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	class UProjectileMovementComponent* ProjectileMovementComponent; // Movement component for the projectile
+
+	UFUNCTION()
+	void OnHit(
+		UPrimitiveComponent* HitComponent, 
+		AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, 
+		FVector NormalImpulse, 
+		const FHitResult& Hit);
+	
+	UPROPERTY(EditAnywhere)
+	float Damage = 20.f; // Damage dealt by the projectile
 
 public:	
 	// Called every frame

@@ -16,20 +16,8 @@ public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
 
-	// UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	// int32 VisibleAnywhereInt = 12;
+	void HandleDestruction();
 
-	// UPROPERTY(EditAnywhere)
-	// int32 EditAnywhereInt = 22;
-
-	// UPROPERTY(VisibleInstanceOnly)
-	// int32 VisibleInstanceOnlyInt = 11;
-
-	// UPROPERTY(VisibleDefaultsOnly)
-	// int32 VisibleDefaultsOnlyInt = 5;
-
-	// UPROPERTY(EditAnywhere)
-	// float Speed = 400.f;
 protected:
 	// Called when the game starts or when spawned
 	void RotateTurret(FVector LookAtTarget);
@@ -52,4 +40,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"),  category = "Super Duper Varaibles")
 	int32 EditAnywhereInt = 22;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	TSubclassOf<class AProjectile> ProjectileClass; // Type of projectile to spawn
 };

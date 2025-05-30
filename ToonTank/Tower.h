@@ -17,6 +17,7 @@ class TOONTANKS_API ATower : public ABasePawn
 public:
 	// Sets default values for this pawn's properties
 	virtual void Tick(float DeltaTime) override;
+	void HandleDestruction();
 	ATower();
 
 protected:

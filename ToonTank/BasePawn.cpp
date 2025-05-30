@@ -4,7 +4,9 @@
 #include "BasePawn.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "DrawDebugHelpers.h"
+// #include "DrawDebugHelpers.h"
+#include "Projectile.h"
+
 // Sets default values
 ABasePawn::ABasePawn()
 {
@@ -24,6 +26,12 @@ ABasePawn::ABasePawn()
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
 }
 
+void ABasePawn::HandleDestruction()
+{
+	// TODO: Visual and sound effects for destruction
+	
+}
+
 void ABasePawn::RotateTurret(FVector LookAtTarget)
 {
 	FVector ToTarget = LookAtTarget - TurretMesh->GetComponentLocation();
@@ -40,17 +48,22 @@ void ABasePawn::Fire()
 {
 	// Implement firing logic here
 	// For example, spawn a projectile at the ProjectileSpawnPoint location
-	UE_LOG(LogTemp, Warning, TEXT("Fire function called!"));
+	// UE_LOG(LogTemp, Warning, TEXT("Fire function called!"));
 
-	FVector ProjectileSpawnPointLocation = ProjectileSpawnPoint->GetComponentLocation();
-	DrawDebugSphere(
-		GetWorld(),
-		ProjectileSpawnPointLocation, // Offset the sphere a bit above the tank
-		25.f, // Radius of the sphere
-		12, // Segments
-		FColor::Red,
-		false,
-		3.f
-	);
+	FVector Location = ProjectileSpawnPoint->GetComponentLocation();
+	FRotator Rotation = ProjectileSpawnPoint->GetComponentRotation();
+	
+	auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, Location, Rotation);
+	Projectile->SetOwner(this); // Set the owner of the projectile to this pawn
+	// DrawDebugSphere(
+	// 	GetWorld(),
+	// 	Location, // Offset the sphere a bit above the tank
+	// 	25.f, // Radius of the sphere
+	// 	12, // Segments
+	// 	FColor::Red,
+	// 	false,
+	// 	3.f
+	// );
 
+	
 }
