@@ -17,6 +17,7 @@ public:
 	ABasePawn();
 
 	void HandleDestruction();
+	// virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,4 +43,17 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	TSubclassOf<class AProjectile> ProjectileClass; // Type of projectile to spawn
+
+	
+
+	UPROPERTY(EditAnywhere,  Category = "Combat")
+	class UParticleSystem* DeathParticles; // Particle effect when the pawn is destroyed
+
+	UPROPERTY(EditAnywhere,  Category = "Combat")
+	class USoundBase* DeathSound; // Sound effect when the pawn is destroyed
+
+	UPROPERTY(EditAnywhere,  Category = "Combat")
+	TSubclassOf<class UCameraShakeBase> DeathCameraShakeClass; // Camera shake effect when the pawn is destroyed
 };
+
+

@@ -38,6 +38,22 @@ private:
 	UPROPERTY(EditAnywhere)
 	float Damage = 20.f; // Damage dealt by the projectile
 
+	UPROPERTY(EditAnywhere, Category = "Combit")
+	class UParticleSystem* HitParticles; // Particle effect when the projectile hits something
+
+	UPROPERTY(VisibleAnywhere, Category = "Combit")
+	class UParticleSystemComponent* TrailParticles; // Particle effect for the projectile trail
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combit")
+	class USoundBase* LaunchSound; // Particle effect when the projectile is destroyed
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combit")
+	USoundBase* HitSound; // Sound effect when the projectile hits something
+	
+	UPROPERTY(EditAnywhere, Category = "Combit")
+	TSubclassOf<class UCameraShakeBase> HitCameraShakeClass; // Camera shake effect when the projectile hits something
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
