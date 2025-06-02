@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "ShooterCharacter.generated.h"
 
+class AGun; // Forward declaration of the Gun class
+
 UCLASS()
 class SIMPLESHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -33,6 +35,12 @@ private:
 	void LookRightRate(float AxisValue);
 	// Add other member variables and functions as needed
 
-	UPROPERTY(EditAnywhere, Category="Movement")
+	UPROPERTY(EditAnywhere)
 	float RotationRate = 10.0f; // Rotation rate for the character
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AGun> GunClass; // Class of the gun to spawn
+
+	UPROPERTY()
+	AGun* Gun; // Instance of the gun, Actual Gun
 };
