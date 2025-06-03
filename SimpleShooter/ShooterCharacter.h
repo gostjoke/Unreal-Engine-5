@@ -33,6 +33,8 @@ private:
 	void MoveRight(float AxisValue);
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
+	void Shoot(); // Function to handle shooting
+
 	// Add other member variables and functions as needed
 
 	UPROPERTY(EditAnywhere)
