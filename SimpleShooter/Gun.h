@@ -35,4 +35,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class UParticleSystem* MuzzleFlash; // Particle system for muzzle flash
+
+	UPROPERTY(EditAnywhere)
+	float MaxRange = 1000.0f; // Maximum range of the gun
 };

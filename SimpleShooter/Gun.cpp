@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 // UGameplayStatics include
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AGun::AGun()
@@ -25,6 +26,43 @@ void AGun::PullTrigger()
 	UE_LOG(LogTemp, Warning, TEXT("Gun Trigger Pulled!"));
 	// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, Mesh->GetSocketLocation(TEXT("MuzzleSocket")), Mesh->GetSocketRotation(TEXT("MuzzleSocket")), true);
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
+
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	if (OwnerPawn==nullptr) return;
+	AController* OwnerController = OwnerPawn -> GetController();
+	if (OwnerController == nullptr) return;
+	// Set Location and Roatation
+	FVector Location;
+	FRotator Rotation;
+
+	OwnerController->GetPlayerViewPoint(Location, Rotation);
+	// Draw a debug camera at the gun's location
+
+	FVector End = Location + Rotation.Vector() * MaxRange;
+	// Line trace to check for hit
+
+	FHitResult Hit;
+	bool bSuccess = GetWorld()->LineTraceSingleByChannel(
+		Hit,
+		Location,
+		End,
+		ECollisionChannel::ECC_GameTraceChannel1
+	);
+
+	if (bSuccess)
+	{
+		DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
+	};
+
+	// DrawDebugCamera(
+	// 	GetWorld(),
+	// 	Location,
+	// 	Rotation,
+	// 	90.f,      // FOV
+	// 	2.0f,      // PersistTimeSeconds
+	// 	FColor::Red,
+	// 	true    // PersistentLines
+	// );
 }
 
 // Called when the game starts or when spawned
