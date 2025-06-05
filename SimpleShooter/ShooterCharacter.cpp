@@ -17,6 +17,8 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Health = MaxHealth; // Initialize health to max health
+
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
 
 	// Attach the gun to the character's mesh at the right hand socket
@@ -24,6 +26,12 @@ void AShooterCharacter::BeginPlay()
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 	Gun->SetOwner(this); // Set the owner of the gun to this character
 }
+
+bool AShooterCharacter::IsDead() const
+{
+	return Health <= 0; // Check if health is less than or equal to zero
+}
+
 
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
@@ -45,6 +53,18 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent -> BindAxis(TEXT("LookRightRate"), this, &AShooterCharacter::LookRightRate); // look right and left 
 	PlayerInputComponent -> BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent -> BindAction("Shoot", IE_Pressed, this, &AShooterCharacter::Shoot);
+
+}
+
+float AShooterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	DamageToApply = FMath::Min(Health, DamageToApply); // Ensure we don't apply more damage than current health
+	Health -= DamageToApply; // Reduce health by the damage applied
+	UE_LOG(LogTemp, Warning, TEXT("Character took damage: %f, Current Health: %f"), DamageToApply, Health);
+	
+	return DamageToApply; // Return the amount of damage applied
 
 }
 
