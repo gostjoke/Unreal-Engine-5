@@ -4,31 +4,42 @@
 #include "ShooterAIController.h"
 #include "Kismet/GameplayStatics.h"
 
-void AShooterAIController::BeginPlay()
+#include "BehaviorTree/BlackboardComponent.h"
+
+void AShooterAIController::BeginPlay() 
 {
     Super::BeginPlay();
+ 
+    if (AIBehavior != nullptr)
+    {
+        RunBehaviorTree(AIBehavior);
+
+        APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
+        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
+
+    }
+
 }
 
-void AShooterAIController::Tick(float DeltaTime)
+void AShooterAIController::Tick(float DeltaTime) 
 {
     Super::Tick(DeltaTime);
-    // Additional AI controller initialization can be done here
-    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    
+    APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    // MoveToActor(PlayerPawn, 200);
 
-    // If LineOfSight 
-        // MoveTo
-        // SetFocus
-    //else
-        // ClearFocus
-        // StopMovement
     if (LineOfSightTo(PlayerPawn))
     {
-        SetFocus(PlayerPawn); // Set focus on the player pawn
-        MoveToActor(PlayerPawn, AcceptanceRadius); // Move towards the player pawn with a specified acceptance radius
+        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
+        GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
     }
     else
     {
-        ClearFocus(EAIFocusPriority::Gameplay); // Clear focus if not in line of sight
-        StopMovement(); // Stop movement if not in line of sight
+        GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
+        StopMovement();
     }
+
+
 }
