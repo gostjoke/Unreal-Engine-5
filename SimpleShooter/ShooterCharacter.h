@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const; // Pure Node means no execution pin
 
+	UFUNCTION(BlueprintPure)
+	float GetHealthPercent() const; // use on Heath Point
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -34,12 +37,14 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	void Shoot(); // Function to handle shooting
+	
 private:
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
-	void Shoot(); // Function to handle shooting
+	
 
 	// Add other member variables and functions as needed
 

@@ -28,31 +28,23 @@ void AGun::PullTrigger()
 	// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, Mesh->GetSocketLocation(TEXT("MuzzleSocket")), Mesh->GetSocketRotation(TEXT("MuzzleSocket")), true);
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
 
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	if (OwnerPawn==nullptr) return;
-	AController* OwnerController = OwnerPawn -> GetController();
-	if (OwnerController == nullptr) return;
-	// Set Location and Roatation
-	FVector Location;
-	FRotator Rotation;
-
-	OwnerController->GetPlayerViewPoint(Location, Rotation);
-	// Draw a debug camera at the gun's location
-
-	FVector End = Location + Rotation.Vector() * MaxRange;
-	// Line trace to check for hit
+	UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
 
 	FHitResult Hit;
-	bool bSuccess = GetWorld()->LineTraceSingleByChannel(Hit, Location, End, ECollisionChannel::ECC_GameTraceChannel1);
+	FVector ShotDirection;
+
+	bool bSuccess = GunTrace(Hit, ShotDirection);
+
 	if (bSuccess)
 	{
-		FVector ShotDirection = -Rotation.Vector();
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, Hit.Location);
 		
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor != nullptr)
 		{
 			FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr); // UDamageType::StaticClass()
+			AController* OwnerController = GetOwnerController();
 			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
 			// UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *HitActor->GetName());
 		}
@@ -84,3 +76,34 @@ void AGun::Tick(float DeltaTime)
 
 }
 
+bool AGun::GunTrace(FHitResult& Hit, FVector& ShotDirection)
+{
+	AController* OwnerController = GetOwnerController();
+	if (OwnerController == nullptr) 
+		return false;
+	// Set Location and Roatation
+	FVector Location;
+	FRotator Rotation;
+
+	OwnerController->GetPlayerViewPoint(Location, Rotation);
+	ShotDirection = -Rotation.Vector();
+	// Draw a debug camera at the gun's location
+
+	FVector End = Location + Rotation.Vector() * MaxRange;
+	// Line trace to check for hit
+	// FCollisionQueryParams is used to specify parameters for the line trace
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this); // Ignore the gun itself
+	Params.AddIgnoredActor(GetOwner()); // Ignore the owner pawn
+	//
+	return GetWorld()->LineTraceSingleByChannel(Hit, Location, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
+	
+}
+
+AController* AGun::GetOwnerController() const
+{
+	APawn *OwnerPawn = Cast<APawn>(GetOwner());
+	if (OwnerPawn == nullptr)
+		return nullptr;
+	return OwnerPawn->GetController();
+}

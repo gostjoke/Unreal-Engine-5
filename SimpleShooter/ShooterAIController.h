@@ -13,17 +13,18 @@ UCLASS()
 class SIMPLESHOOTER_API AShooterAIController : public AAIController
 {
 	GENERATED_BODY()
-
 public:
-	// tick
 	virtual void Tick(float DeltaTime) override;
+	bool IsDead() const;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(EditAnywhere, Category = "AI")
-	float AcceptanceRadius = 200.0f; // The radius within which the AI will accept the player's position for movement
+	// UPROPERTY(EditAnywhere)
+	// float AcceptanceRadius = 200;
+
+	UPROPERTY(EditAnywhere)
+	class UBehaviorTree* AIBehavior;
 
 };

@@ -6,6 +6,8 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 
+#include "ShooterCharacter.h"
+
 void AShooterAIController::BeginPlay() 
 {
     Super::BeginPlay();
@@ -27,19 +29,30 @@ void AShooterAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     
-    APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-    // MoveToActor(PlayerPawn, 200);
+    // already instead of service
+    // APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    // // MoveToActor(PlayerPawn, 200);
 
-    if (LineOfSightTo(PlayerPawn))
+    // if (LineOfSightTo(PlayerPawn))
+    // {
+    //     GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
+    //     GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
+    // }
+    // else
+    // {
+    //     GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
+    //     // StopMovement();
+    // }
+
+
+}
+
+bool AShooterAIController::IsDead() const
+{
+    AShooterCharacter*  ConrtolledCharacter = Cast<AShooterCharacter>(GetPawn());
+    if (ConrtolledCharacter != nullptr)
     {
-        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
-        GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
+        return ConrtolledCharacter->IsDead();
     }
-    else
-    {
-        GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
-        StopMovement();
-    }
-
-
+    return true; // If the controlled character is not valid, consider the AI dead
 }

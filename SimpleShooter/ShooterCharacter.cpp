@@ -3,6 +3,8 @@
 
 #include "ShooterCharacter.h"
 #include "Gun.h"
+#include "Components/CapsuleComponent.h"
+#include "SimpleShooterGameModeBase.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -32,6 +34,11 @@ bool AShooterCharacter::IsDead() const
 	return Health <= 0; // Check if health is less than or equal to zero
 }
 
+float AShooterCharacter::GetHealthPercent() const
+{
+	if (MaxHealth <= 0) return 0.0f; // Prevent division by zero
+	return Health / MaxHealth; // Return the health percentage
+}
 
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
@@ -64,6 +71,18 @@ float AShooterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	Health -= DamageToApply; // Reduce health by the damage applied
 	UE_LOG(LogTemp, Warning, TEXT("Character took damage: %f, Current Health: %f"), DamageToApply, Health);
 	
+	if (IsDead())
+	{
+		ASimpleShooterGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASimpleShooterGameModeBase>();
+		if (GameMode != nullptr)
+		{
+			GameMode->PawnKilled(this); // Notify the game mode that this pawn has been killed
+		}
+		DetachFromControllerPendingDestroy(); // Detach the character from the controller if dead, 防止繼續射擊
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Disable collision 必須將其腳色碰撞拿掉
+
+	}
+
 	return DamageToApply; // Return the amount of damage applied
 
 }

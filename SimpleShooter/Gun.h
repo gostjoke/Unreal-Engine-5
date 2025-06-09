@@ -40,8 +40,18 @@ private:
 	class UParticleSystem* ImpactEffect; // Particle system for impact effect 子彈擊中效果
 
 	UPROPERTY(EditAnywhere)
+	USoundBase* MuzzleSound; // Sound to play when firing the gun
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ImpactSound; // Sound to play when the bullet hits something
+
+	UPROPERTY(EditAnywhere)
 	float MaxRange = 1000.0f; // Maximum range of the gun
 
 	UPROPERTY(EditAnywhere)
 	float Damage = 20.0f; // Damage dealt by the gun
+
+	bool GunTrace(FHitResult& Hit, FVector& ShotDirection);
+
+	AController* GetOwnerController() const; // Controller that owns the gun
 };
