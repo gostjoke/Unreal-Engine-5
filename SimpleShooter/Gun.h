@@ -51,6 +51,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	float Damage = 20.0f; // Damage dealt by the gun
 
+	UPROPERTY(EditAnywhere)
+	int MaxAmmo = 30; // Maximum ammo in the gun
+
+	UPROPERTY(VisibleAnywhere)
+	int CurrentAmmo;
+
 	bool GunTrace(FHitResult& Hit, FVector& ShotDirection);
 
 	AController* GetOwnerController() const; // Controller that owns the gun

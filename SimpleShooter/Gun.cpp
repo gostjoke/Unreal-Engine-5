@@ -24,6 +24,16 @@ AGun::AGun()
 
 void AGun::PullTrigger()
 {
+	if (CurrentAmmo <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Out of Ammo!"));
+		return; // No ammo left, do not fire
+	}
+
+	CurrentAmmo--; // Decrease ammo count
+	UE_LOG(LogTemp, Warning, TEXT("Ammo left: %d"),CurrentAmmo);
+	
+
 	// UE_LOG(LogTemp, Warning, TEXT("Gun Trigger Pulled!"));
 	// UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, Mesh->GetSocketLocation(TEXT("MuzzleSocket")), Mesh->GetSocketRotation(TEXT("MuzzleSocket")), true);
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
@@ -67,6 +77,7 @@ void AGun::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CurrentAmmo = MaxAmmo; // Initialize current ammo to max ammo
 }
 
 // Called every frame

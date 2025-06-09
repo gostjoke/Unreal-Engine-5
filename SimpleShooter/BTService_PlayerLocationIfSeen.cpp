@@ -32,7 +32,7 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
     if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn))
     {
         // If the AI does not have line of sight to the player, do not update the location
-        OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), PlayerPawn->GetActorLocation());
+        OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
     }
     else
     {
